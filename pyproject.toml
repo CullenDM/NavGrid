@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navgrid"
+version = "1.0.0"
+description = "2D multi-agent navigation reinforcement learning environment with WAIT-safe PPO"
+readme = "README.md"
+authors = [
+    { name = "Cullen Maglothin" }
+]
+requires-python = ">=3.9"
+dependencies = [
+    "torch>=2.0.0",
+    "numpy>=1.22.0",
+    "pygame>=2.5.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["navgrid*"]
