@@ -4,6 +4,7 @@
 import math
 import os
 import sys
+import threading
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -239,6 +240,37 @@ def test_egocentric_vs_global_view_switch():
     Config.USE_GLOBAL_STATE = False
     print("  -> Passed: Both egocentric and global view modes operate correctly behind the switch.")
 
+
+def test_multi_environment_rollout():
+    """Verify EnvironmentSimulation runs rollouts across multiple parallel environments."""
+    print("Testing Multi-Environment Rollout (NUM_ENVS = 2)...")
+    Config.DEVICE = "cpu"
+    Config.HEADLESS = True
+    Config.VISUALIZE = False
+    Config.NUM_ENVS = 2
+    Config.NUM_AGENTS = 1
+    Config.ENVIRONMENT_SIZE = 11
+    Config.PPO_EPISODES_PER_UPDATE = 1
+    Config.MINIBATCH_SIZE = 8
+    Config.MAX_EPISODE_STEPS = 16
+    Config.CURRICULUM_ENABLED = False
+
+    sim = EnvironmentSimulation()
+    assert len(sim.envs) == 2, f"Expected 2 environments, got {len(sim.envs)}"
+    assert len(sim.agents) == 2, f"Expected 2 agents (1 per env), got {len(sim.agents)}"
+
+    stop_event = threading.Event()
+    sim.run_episode(stop_event, None, 0)
+
+    assert sim.update_count >= 1, f"Expected at least 1 PPO update, got {sim.update_count}"
+    assert sim.last_rollout_batch_samples > 0, "Expected rollout batch samples > 0"
+    print(f"  -> Successfully ran parallel multi-env episode and executed {sim.update_count} PPO updates.")
+    print("  -> Passed: Multi-environment rollout executes and trains cleanly.")
+
+    # Reset back to default
+    Config.NUM_ENVS = 1
+
+
 if __name__ == "__main__":
     print("=" * 60)
     print("Running NavGrid Test Suite")
@@ -249,6 +281,7 @@ if __name__ == "__main__":
     test_environment_and_agent_interaction()
     test_end_to_end_simulation()
     test_egocentric_vs_global_view_switch()
+    test_multi_environment_rollout()
     print("=" * 60)
     print("ALL TESTS PASSED SUCCESSFULLY!")
     print("=" * 60)

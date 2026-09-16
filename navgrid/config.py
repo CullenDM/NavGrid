@@ -155,7 +155,7 @@ class Config:
     MAX_EPISODE_STEPS = int(os.environ.get("NAVGRID_MAX_EPISODE_STEPS", "128"))
     UPDATE_FREQUENCY = 0
     PPO_TOGETHER = False
-    NUM_AGENTS = 1
+    NUM_AGENTS = int(os.environ.get("NAVGRID_NUM_AGENTS", "1"))
 
     # Learning Rate Schedule
     LR_WARMUP_UPDATES = 25

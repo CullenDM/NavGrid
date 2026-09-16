@@ -21,6 +21,9 @@ def parse_args():
     parser.add_argument("--lr", type=float, default=None, help="Learning rate")
     parser.add_argument("--fps", type=int, default=None, help="Target FPS for visualizer")
     parser.add_argument("--random-policy", action="store_true", help="Run with uniform random legal actions (no model)")
+    parser.add_argument("--global-view", action="store_true", help="Use full-grid global view instead of egocentric observation window")
+    parser.add_argument("--num-envs", type=int, default=None, help="Number of parallel environments for rollouts")
+    parser.add_argument("--num-agents", type=int, default=None, help="Number of agents per environment")
     return parser.parse_args()
 
 
@@ -52,11 +55,16 @@ def main():
         Config.RANDOM_ACTION_POLICY = True
     if args.global_view:
         Config.USE_GLOBAL_STATE = True
+    if args.num_envs is not None:
+        Config.NUM_ENVS = args.num_envs
+    if args.num_agents is not None:
+        Config.NUM_AGENTS = args.num_agents
 
     print("=" * 60)
     print(" NavGrid: Standalone RL Navigation Environment")
     print("=" * 60)
     print(f" Device:         {Config.DEVICE}")
+    print(f" Environments:   {Config.NUM_ENVS} parallel env(s), {Config.NUM_AGENTS} agent(s)/env")
     print(f" Environment:    {Config.ENVIRONMENT_SIZE}x{Config.ENVIRONMENT_SIZE} (View: {Config.GRID_SIZE}x{Config.GRID_SIZE}, Mode: {'Global' if Config.USE_GLOBAL_STATE else 'Egocentric'})")
     print(f" State Dim:      {Config.STATE_DIM} (Sequence: {Config.SEQUENCE_LENGTH})")
     print(f" Model:          {Config.MODEL_NAME}")

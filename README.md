@@ -27,6 +27,10 @@ This repository provides the NavGrid environment along with an example Multi-Lay
   * **Agent State Feature Vector**: `(B, T, 18)` containing 10 base scalar telemetry values (energy fraction, food remaining, steps since food, carried inventory, etc.) plus one-hot last action (4) and one-hot last direction (4).
   * **Agent Grid Coordinates**: `(B, T, 2)`.
 
+* **Multi-Environment & Multi-Agent Support**:
+  * **Multi-Environment Parallel Rollouts**: Step multiple independent grid environments concurrently during episode generation (`Config.NUM_ENVS`, `--num-envs [N]`, or `NAVGRID_NUM_ENVS=N`). The simulation coordinator aggregates transitions across all active environments in parallel, feeding batched experience into PPO updates.
+  * **Multi-Agent Environments**: Populate environments with multiple interacting agents (`Config.NUM_AGENTS`, `--num-agents [N]`, or `NAVGRID_NUM_AGENTS=N`), supporting competitive multi-agent arena variants (`DUAL_AGENT` predation, shared resource foraging, and contest mechanics).
+
 * **Example MLP Model (Integration Reference)**:
   * `NavGridMLPPolicy`: Serves as a reference implementation showing how to wire a custom model into the environment. It catches the two sequential inputs output by NavGrid, flattening $(11 \times 11 + 18) \times T = 139 \times 64 = 8,896$ features into a 2-layer MLP trunk with LayerNorm and ReLU activations, outputting action logits, direction logits, and state values.
 
@@ -57,6 +61,8 @@ python run_navigation.py --headless
 CLI options:
 * `--headless`: Disable Pygame rendering.
 * `--device [cpu|cuda]`: Target compute device.
+* `--num-envs [N]`: Number of parallel environments for simultaneous rollouts (default 1).
+* `--num-agents [N]`: Number of agents per environment (default 1).
 * `--episodes [N]`: Episodes collected per PPO update (default 4).
 * `--minibatch [N]`: Minibatch size for PPO SGD steps (default 80).
 * `--random-policy`: Run model-free mode with uniform legal action sampling (no neural net).
@@ -84,7 +90,7 @@ NavGrid/
 │   ├── model.py            # Example NavGridMLPPolicy showing how to wire in a model
 │   ├── ppo.py              # PPO trainer with WAIT-safe loss masking & KL rollback
 │   ├── visualizer.py       # Pygame rendering engine and HUD
-│   └── simulation.py       # EnvironmentSimulation multi-agent rollout runner
+│   └── simulation.py       # EnvironmentSimulation multi-env and multi-agent rollout runner
 ├── tests/
 │   └── test_navgrid.py     # Unit and integration test suite
 ├── run_navigation.py       # Main executable training script

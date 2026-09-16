@@ -79,10 +79,8 @@ class EnvironmentSimulation:
     @staticmethod
     def _validate_episode_batch_profile() -> None:
         """Reject settings that violate this standalone trainer's contract."""
-        if int(Config.NUM_ENVS) != 1:
-            raise ValueError(
-                "episode-batch trainer requires exactly one environment"
-            )
+        if int(Config.NUM_ENVS) < 1:
+            raise ValueError("NUM_ENVS must be at least one")
         if int(Config.NUM_AGENTS) < 1:
             raise ValueError("NUM_AGENTS must be at least one")
         if int(getattr(Config, "MAX_EPISODE_STEPS", 0)) < 0:
