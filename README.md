@@ -34,6 +34,11 @@ This repository provides the NavGrid environment along with an example Multi-Lay
 * **Example MLP Model (Integration Reference)**:
   * `NavGridMLPPolicy`: Serves as a reference implementation showing how to wire a custom model into the environment. It catches the two sequential inputs output by NavGrid, flattening $(11 \times 11 + 18) \times T = 139 \times 64 = 8,896$ features into a 2-layer MLP trunk with LayerNorm and ReLU activations, outputting action logits, direction logits, and state values.
 
+* **Model-Free Random Policy Mode**:
+  * Configurable via `Config.RANDOM_ACTION_POLICY = True`, the `--random-policy` CLI flag, or `NAVGRID_RANDOM_POLICY=1`.
+  * Samples uniformly from valid legal action and direction masks at every step without initializing neural networks or performing PPO updates.
+  * Useful for fast throughput benchmarking, sanity-checking world dynamics, and evaluating environment baselines.
+
 ---
 
 ## Quickstart
@@ -56,6 +61,11 @@ python run_navigation.py
 To run in headless mode (e.g. on remote servers):
 ```bash
 python run_navigation.py --headless
+```
+
+To run with a model-free random policy (e.g. for throughput benchmarking or testing):
+```bash
+python run_navigation.py --random-policy --headless
 ```
 
 CLI options:

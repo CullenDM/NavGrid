@@ -136,7 +136,7 @@ class Config:
     MODEL_NAME = os.environ.get("NAVGRID_MODEL_NAME", "NavGrid-MLP")
     MODEL_PATH = f"./models/ppo_model_{MODEL_NAME}.pth"
     LOAD_MODEL = False
-    RANDOM_ACTION_POLICY = False
+    RANDOM_ACTION_POLICY = os.environ.get("NAVGRID_RANDOM_POLICY", "0") == "1"
 
     # PPO Hyperparameters & WAIT-Safe Optimization
     DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
