@@ -107,3 +107,10 @@ NavGrid/
 ├── pyproject.toml          # Packaging specification
 └── requirements.txt        # Runtime dependencies
 ```
+
+---
+
+## License
+
+NavGrid is released under the [Creative Commons Attribution 4.0 International License (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).
+You may use, modify, and redistribute it, including commercially, provided you give appropriate credit to Cullen Maglothin and indicate if changes were made. See [LICENSE](LICENSE).
